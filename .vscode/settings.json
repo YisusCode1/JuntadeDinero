@@ -1,0 +1,7 @@
+{
+  "editor.formatOnSave": true,
+
+  "dotenv.enableAutocloaking": false,
+  "git.ignoreLimitWarning": true,
+
+}

@@ -1,0 +1,30 @@
+from pyteal import *
+
+def approval_program():
+    global_colateral_depositado = Bytes("colateral_depositado")
+    recibir_colateral = Int(0)
+    devolver_colateral = Int(1)
+    program = Cond(
+        [Txn.application_id() == Int(0), Return(Int(1))],
+        [Txn.on_completion() == OnComplete.NoOp, Cond(
+            [Txn.application_args[0] == recibir_colateral, ...],
+            [Txn.application_args[0] == devolver_colateral, ...],
+        )],
+    )
+    return program
+
+def clear_state_program():
+    return Int(1)
+
+if __name__ == "__main__":
+    approval_program_code = compileTeal(approval_program(), mode=Mode.Application)
+    clear_state_program_code = compileTeal(clear_state_program(), mode=Mode.Application)
+
+    with open("Colateral.teal", "w") as f:
+        f.write(approval_program_code)
+
+    with open("Colateral_clear.teal", "w") as f:
+        f.write(clear_state_program_code)
+
+    print("Contratos compilados correctamente.")
+

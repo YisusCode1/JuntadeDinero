@@ -1,0 +1,213 @@
+/* Global Styles */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+  overflow-y: auto; /* Solo permitir scroll vertical */
+  overflow-x: hidden; /* Evitar scroll horizontal */
+  width: 100%; /* Asegura que body ocupe todo el ancho */
+}
+
+header App {
+  display: flex;
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
+  padding: 10px;
+  background-color: #f0f0f0;
+  width: 100%; /* Asegura que el header ocupe todo el ancho */
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Añade sombra para mejor separación visual */
+}
+
+/* Estilos para el nav en el header */
+header nav {
+  display: flex;
+  align-items: center; /* Centra verticalmente los enlaces */
+}
+
+header nav a {
+  margin-right: 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+header nav a:hover {
+  color: #007bff;
+}
+
+main {
+  flex: 1; /* Permite que el main ocupe todo el espacio restante */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra verticalmente el contenido */
+  align-items: center; /* Centra horizontalmente el contenido */
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-top: 60px; /* Agrega un margen superior al nav */
+}
+
+h1 {
+  text-align: center; /* Centra el título */
+  margin-bottom: 20px; /* Agrega un margen inferior */
+}
+
+p {
+  text-align: center; /* Centra el párrafo */
+  margin-bottom: 20px; /* Agrega un margen inferior */
+}
+
+div .button-container{
+  text-align: center;
+}
+
+/* Estilos para el botón en ConnectWallet */
+.wallet-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.wallet-button:hover {
+  background-color: #0056b3;
+}
+
+/* Botones de Crear Junta y Unirse a Junta */
+button.create-junta-btn, button.unirse-junta-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+button.create-junta-btn:hover, button.unirse-junta-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Estilos para la página de creación de la junta */
+.create-junta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 20px;
+}
+
+.create-junta main {
+  width: 90%; /* Hacemos el contenedor más estrecho */
+  max-width: 600px; /* Establecemos un ancho máximo */
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Permitir scroll vertical */
+}
+
+.create-junta form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.create-junta label {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.create-junta input {
+  margin-top: 5px;
+  padding: 10px;
+  width: 80%; /* Hacemos el input más estrecho */
+  max-width: 300px; /* Establecemos un ancho máximo para los inputs */
+  box-sizing: border-box;
+}
+
+.create-junta .validar-direccion-btn, .create-junta .validar-datos-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.create-junta .validar-direccion-btn:hover, .create-junta .validar-datos-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Botón para Crear Junta */
+.create-junta .crear-junta-btn {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.create-junta .crear-junta-btn:hover {
+  background-color: #218838;
+}
+
+.create-junta .create-juntas-btn {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Estilos para el contenedor de resultados */
+.resultados {
+  padding: 20px;
+  text-align: center;
+}
+
+.resultados header {
+  margin-bottom: 20px;
+}
+
+.resultados ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.resultados li {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+}
+
+span.valida {
+  color: green;
+  font-size: 1.2em;
+  margin-left: 10px;
+}
+
+span.no-valida {
+  color: red;
+  font-size: 1.2em;
+  margin-left: 10px;
+}
+
+
+
+
+
+

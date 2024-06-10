@@ -1,0 +1,25 @@
+from pyteal import *
+# Contrato de Selección Aleatoria
+def approval_program():
+
+	seleccionar_ganador = Int(0)  # Ejemplo de operación para seleccionar un ganador
+	program = Cond(
+	[Txn.application_id() == Int(0), Return(Int(1))],  # Lógica de creación de contrato
+	[Txn.on_completion() == OnComplete.NoOp, Cond(
+	[Txn.application_args[0] == seleccionar_ganador, ...],  # Lógica para seleccionar ganador
+	)],
+	)
+	return program
+
+def clear_state_program():
+
+	return Int(1)
+
+if __name__ == "__main__":
+
+with open("SeleccionAleatoria.teal", "w") as f:
+
+	f.write(compileTeal(approval_program(), mode=Mode.Application))
+with open("SeleccionAleatoria_clear.teal", "w") as f:
+
+	f.write(compileTeal(clear_state_program(), mode=Mode.Application))

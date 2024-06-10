@@ -1,0 +1,44 @@
+from pyteal import *
+
+def approval_program():
+    # Definición de variables de estado global
+    global_num_participantes = Bytes("num_participantes")
+    global_monto_total = Bytes("monto_total")
+    global_ganador = Bytes("ganador")
+    # Definición de operaciones
+    registrar = Bytes("registrar")  # Operación para registrar un participante
+    recibir_fondos = Bytes("recibir_fondos")  # Operación para recibir fondos
+    seleccionar_ganador = Bytes("seleccionar_ganador")  # Operación para seleccionar un ganador
+    # Lógica del programa
+    program = Cond(
+        # Lógica para la creación de la aplicación
+        [Txn.application_id() == Int(0), Return(Int(1))],
+        # Lógica para la operación NoOp (operaciones de la junta)
+        [Txn.on_completion() == OnComplete.NoOp, Cond(
+            # Registrar un participante
+            [Txn.application_args[0] == registrar,
+            App.globalPut(global_num_participantes, App.globalGet(global_num_participantes) + Int(1)),
+            Approve()],
+            # Recibir fondos de los participantes
+            [Txn.application_args[0] == recibir_fondos,
+            App.globalPut(global_monto_total, App.globalGet(global_monto_total) + Txn.application_args[1]),
+            Approve()],
+            # Seleccionar un ganador
+            [Txn.application_args[0] == seleccionar_ganador,
+            App.globalPut(global_ganador, Txn.application_args[1]),
+            Approve()]
+        )],
+        # Manejo de otras operaciones
+        [Txn.on_completion() == OnComplete.UpdateApplication, Reject()],
+        [Txn.on_completion() == OnComplete.DeleteApplication, Reject()],
+        [Txn.on_completion() == OnComplete.CloseOut, Return(Int(1))],
+        [Txn.on_completion() == OnComplete.OptIn, Return(Int(1))]
+    )
+    return program
+
+def clear_state_program():
+    return Return(Int(1))
+
+if __name__ == "__main__":
+    print(compileTeal(approval_program(), mode=Mode.Application, version=2))
+
