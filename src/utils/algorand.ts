@@ -1,42 +1,11 @@
 import algosdk from 'algosdk';
-import { PeraWalletConnect } from '@perawallet/connect';
 
-const algodToken = 'YOUR_ALGOD_TOKEN';
-const algodServer = 'https://testnet-algorand.api.purestake.io/ps2';
+// Configurar cliente Algodv2 para Algonode
+const algodServer = 'https://testnet-idx.algonode.cloud';
+const algodToken = '';
 const algodPort = '';
 const client = new algosdk.Algodv2(algodToken, algodServer, algodPort);
 
-const peraWallet = new PeraWalletConnect();
-
-// Conectar la billetera
-export const connectWallet = async (): Promise<string | null> => {
-  try {
-    const accounts = await peraWallet.connect();
-    if (accounts.length > 0) {
-      const accountAddress = accounts[0];
-      // @ts-ignore
-      peraWallet.reconnectSession(); // Ignorar error
-      return accountAddress;
-    } else {
-      console.error("No se encontraron cuentas conectadas.");
-      return null;
-    }
-  } catch (error) {
-    console.error("Error al conectar la billetera:", error);
-    return null;
-  }
-};
-
-// Verificar si la billetera está conectada
-export const isWalletConnected = (): boolean => {
-  // @ts-ignore
-  peraWallet.reconnectSession(); // Ignorar error
-  // @ts-ignore
-  const connectedAccounts = peraWallet.getAccounts(); // Ignorar error
-  return connectedAccounts.length > 0;
-};
-
-// Enviar una transacción
 export const sendTransaction = async (fromAddress: string, toAddress: string, amount: number): Promise<boolean> => {
   try {
     const params = await client.getTransactionParams().do();
@@ -76,5 +45,6 @@ const waitForConfirmation = async (txId: string) => {
     await client.statusAfterBlock(lastRound).do();
   }
 };
+
 
 

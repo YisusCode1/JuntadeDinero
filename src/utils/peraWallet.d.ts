@@ -1,17 +1,13 @@
 // src/utils/peraWallet.d.ts
 
-// Declara el módulo de `peraWallet.js`
-declare module '../utils/peraWallet' {
-  import { PeraWalletConnect } from '@perawallet/connect';
+// Importar el tipo PeraWalletConnect desde el módulo
+import { PeraWalletConnect } from "@perawallet/connect";
 
-  // Define las funciones exportadas
-  export const connectWallet: () => Promise<string[]>;
-  export const disconnectWallet: () => void;
-  export const isWalletConnected: () => boolean;
+// Definir el tipo para peraWallet
+declare const peraWallet: PeraWalletConnect;
 
-  // Exporta la instancia de PeraWalletConnect
-  const peraWallet: PeraWalletConnect;
-  export default peraWallet;
-}
+// Exportar el tipo
+export default peraWallet;
+
 
 

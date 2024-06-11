@@ -13,8 +13,9 @@ const ConnectWallet: React.FC = () => {
 
   const connectWallet = async () => {
     try {
-      const accounts = await peraWalletAuth.login();
+      const accounts = await peraWalletAuth.connectWallet();
       setAccount(accounts[0]);
+      localStorage.setItem('peraWalletAccount', accounts[0]);
     } catch (error) {
       console.error('Login failed:', error);
     }
@@ -32,6 +33,7 @@ const ConnectWallet: React.FC = () => {
 };
 
 export default ConnectWallet;
+
 
 
 

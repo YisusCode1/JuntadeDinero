@@ -1,32 +1,72 @@
-import { PeraWalletConnect } from "@perawallet/connect";
+// src/utils/peraWalletAuth.ts
 
-// Instanciar la conexión con Pera Wallet
-const peraWallet = new PeraWalletConnect();
+import peraWallet from './peraWallet'; // Importar la instancia de PeraWalletConnect
+import algosdk from 'algosdk';
+
+// Configurar cliente Algodv2 para Algonode
+const algodServer = 'https://testnet-idx.algonode.cloud';
+const algodToken = '';
+const algodPort = '';
+const client = new algosdk.Algodv2(algodToken, algodServer, algodPort);
 
 export const peraWalletAuth = {
-  login: async () => {
+  // Otras funciones de autenticación...
+
+  connectWallet: async (): Promise<string[]> => {
     try {
-      // Solicitar conexión a la billetera
-      const accounts = await peraWallet.connect();
-      // Manejar el inicio de sesión exitoso
-      return accounts;
+      // Implementación para conectar la billetera
+      // Por ejemplo:
+      const connectedAccounts = await peraWallet.connect(); // Suponiendo que 'connect' es el método correcto para conectar la billetera
+      return connectedAccounts;
     } catch (error) {
-      // Manejar errores de inicio de sesión
-      console.error("Error al iniciar sesión con Pera Wallet:", error);
-      throw error;
+      console.error("Error al conectar la billetera:", error);
+      throw error; // Propaga el error para que pueda ser manejado por el componente que llama a esta función
     }
   },
-  logout: () => {
-    // Desconectar de la billetera
-    peraWallet.disconnect();
-    // Manejar el cierre de sesión
-    console.log("Desconectado de Pera Wallet");
-  },
-  isAuthenticated: () => {
-    // Verificar si el usuario está autenticado
-    return peraWallet.isConnected;
+
+  sendTransaction: async (fromAddress: string, toAddress: string, amount: number): Promise<boolean> => {
+    try {
+      const params = await client.getTransactionParams().do();
+
+      const txn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+        from: fromAddress,
+        to: toAddress,
+        amount: algosdk.algosToMicroalgos(amount),
+        suggestedParams: params
+      });
+
+      // Firmar la transacción con la instancia de PeraWalletConnect
+      const signedTxn = await peraWallet.signTransaction(txn.toByte());
+
+      const { txId } = await client.sendRawTransaction(signedTxn).do();
+
+      await waitForConfirmation(txId);
+
+      console.log("Transacción enviada con éxito:", txId);
+      return true;
+    } catch (error) {
+      console.error("Error al enviar la transacción:", error);
+      return false;
+    }
   }
 };
+
+const waitForConfirmation = async (txId: string) => {
+  let status = await client.status().do();
+  let lastRound = status["last-round"];
+  while (true) {
+    const pendingInfo = await client.pendingTransactionInformation(txId).do();
+    if (pendingInfo["confirmed-round"] && pendingInfo["confirmed-round"] > 0) {
+      console.log(`Transacción confirmada en la ronda ${pendingInfo["confirmed-round"]}.`);
+      break;
+    }
+    lastRound++;
+    await client.statusAfterBlock(lastRound).do();
+  }
+};
+
+
+
 
 
 

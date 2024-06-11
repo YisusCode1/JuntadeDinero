@@ -1,30 +1,22 @@
-// src/utils/peraWallet.js
+// src/utils/peraWallet.ts
+
 import { PeraWalletConnect } from "@perawallet/connect";
 
-const peraWallet = new PeraWalletConnect();
-
-export const connectWallet = async () => {
-  try {
-    const accounts = await peraWallet.connect();
-    // Manejar el inicio de sesión exitoso
-    return accounts;
-  } catch (error) {
-    // Manejar errores de inicio de sesión
-    console.error("Error al iniciar sesión con Pera Wallet:", error);
-    throw error;
+class PeraWalletConnectExtended extends PeraWalletConnect {
+  // Método para firmar una transacción
+  async signTransaction(transactionBytes: Uint8Array): Promise<Uint8Array> {
+    // Lógica para firmar la transacción utilizando la billetera
+    // Por ahora, devolvemos el mismo objeto sin firmar
+    return transactionBytes;
   }
-};
+}
 
-export const disconnectWallet = () => {
-  peraWallet.disconnect();
-  // Manejar el cierre de sesión
-};
+// Instanciar la conexión con Pera Wallet
+const peraWallet = new PeraWalletConnectExtended();
 
-export const isWalletConnected = () => {
-  return peraWallet.isConnected;
-  // Verificar si el usuario está autenticado
-};
-
+// Exportar la instancia de peraWallet
 export default peraWallet;
+
+
 
 

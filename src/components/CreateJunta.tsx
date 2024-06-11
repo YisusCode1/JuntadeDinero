@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { connectWallet, isWalletConnected } from '@/utils/peraWallet';
-import { sendTransaction } from '../utils/algorand';
+import { peraWalletAuth } from '@/utils/peraWalletAuth'; // Ajustado el nombre del archivo de autenticación
+import { sendTransaction } from '@/utils/algorand'; // Ajustado el nombre del archivo de transacción
 import '../styles/styles.css';
 
 const CreateJunta: React.FC = () => {
@@ -12,7 +12,6 @@ const CreateJunta: React.FC = () => {
   const [validated, setValidated] = useState<boolean>(false);
   const [showDirecciones, setShowDirecciones] = useState<boolean>(false);
   const [account, setAccount] = useState<string | null>(null);
-  const [colateralPagado, setColateralPagado] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,26 +54,43 @@ const CreateJunta: React.FC = () => {
       console.log(`Dirección ${direccion} válida`);
       // Conectar billetera si aún no está conectada
       if (!account) {
-        const connectedAccounts = await connectWallet();
-        if (connectedAccounts && connectedAccounts.length > 0) {
-          setAccount(connectedAccounts[0]); // Solo establece la primera cuenta conectada
-        } else {
-          console.error("No se encontraron cuentas conectadas.");
-          return; // Salir si no hay cuentas conectadas
+        try {
+          const connectedAccounts = await peraWalletAuth.connectWallet();
+          if (connectedAccounts && connectedAccounts.length > 0) {
+            setAccount(connectedAccounts[0]); // Solo establece la primera cuenta conectada
+          } else {
+            console.error("No se encontraron cuentas conectadas.");
+            return; // Salir si no hay cuentas conectadas
+          }
+        } catch (error) {
+          console.error("Error al conectar la billetera:", error);
+          return; // Salir si hay un error al conectar la billetera
         }
       }
 
-      if (account && typeof monto === 'number') {
-        const montoColateral = monto; // El monto a pagar como colateral (puedes ajustar esta lógica según lo que necesites)
+      // Verificar si el monto es un número válido
+      if (typeof monto !== 'number') {
+        console.error("El monto no es un número válido.");
+        return; // Salir si el monto no es válido
+      }
 
-        try {
-          await sendTransaction(account, 'CONTRACT_ADDRESS', montoColateral);
+      const montoColateral = monto; // El monto a pagar como colateral
+
+      try {
+        if (account) { // Verificar si account no es null
+          // Utilizar la función sendTransaction para enviar la transacción
+          await sendTransaction(account, direccion, montoColateral);
           console.log(`Colateral pagado por la dirección ${direccion}`);
-        } catch (error) {
-          console.error('Error al pagar el colateral:', error);
-          newDireccionesValidadas[index] = false; // Si hay error, marcar la dirección como no validada
+          // Actualizar el estado de la dirección validada después de realizar la transacción
+          newDireccionesValidadas[index] = true;
           setDireccionesValidadas(newDireccionesValidadas);
+        } else {
+          console.error("No se ha conectado ninguna cuenta de billetera.");
         }
+      } catch (error) {
+        console.error('Error al pagar el colateral:', error);
+        newDireccionesValidadas[index] = false; // Si hay error, marcar la dirección como no validada
+        setDireccionesValidadas(newDireccionesValidadas);
       }
     } else {
       console.error(`Dirección ${direccion} no válida`);
@@ -119,7 +135,6 @@ const CreateJunta: React.FC = () => {
     const numeroDeGanadores = direcciones.length;
     const ganadoresAleatorios: string[] = [];
 
-    // Clonamos el array direcciones para evitar modificar el array original
     const direccionesCopy = [...direcciones];
 
     for (let i = 0; i < numeroDeGanadores; i++) {
@@ -226,6 +241,7 @@ const CreateJunta: React.FC = () => {
 };
 
 export default CreateJunta;
+
 
 
 
