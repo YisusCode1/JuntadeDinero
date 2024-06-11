@@ -1,3 +1,5 @@
+// src/components/ConnectWallet.tsx
+
 import React, { useEffect, useState } from 'react';
 import { peraWalletAuth } from '../utils/peraWalletAuth';
 
@@ -10,6 +12,16 @@ const ConnectWallet: React.FC = () => {
       setAccount(storedAccount);
     }
   }, []);
+
+  const toggleWallet = async () => {
+    if (account) {
+      await peraWalletAuth.disconnectWallet();
+      localStorage.removeItem('peraWalletAccount');
+      setAccount(null);
+    } else {
+      connectWallet();
+    }
+  };
 
   const connectWallet = async () => {
     try {
@@ -24,15 +36,19 @@ const ConnectWallet: React.FC = () => {
   return (
     <div>
       {account ? (
-        <p>Connected account: {account}</p>
+        <>
+          <p>Connected account: {account}</p>
+          <button className="wallet-button" onClick={toggleWallet}>Disconnect</button>
+        </>
       ) : (
-        <button className="wallet-button" onClick={connectWallet}>Wallet</button>
+        <button className="wallet-button" onClick={toggleWallet}>Wallet</button>
       )}
     </div>
   );
 };
 
 export default ConnectWallet;
+
 
 
 

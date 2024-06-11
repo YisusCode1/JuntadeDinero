@@ -24,6 +24,17 @@ export const peraWalletAuth = {
     }
   },
 
+  disconnectWallet: async (): Promise<void> => {
+    try {
+      // Implementación para desconectar la billetera
+      // Por ejemplo:
+      await peraWallet.disconnect(); // Suponiendo que 'disconnect' es el método correcto para desconectar la billetera
+    } catch (error) {
+      console.error("Error al desconectar la billetera:", error);
+      throw error; // Propaga el error para que pueda ser manejado por el componente que llama a esta función
+    }
+  },
+
   sendTransaction: async (fromAddress: string, toAddress: string, amount: number): Promise<boolean> => {
     try {
       const params = await client.getTransactionParams().do();
@@ -64,6 +75,7 @@ const waitForConfirmation = async (txId: string) => {
     await client.statusAfterBlock(lastRound).do();
   }
 };
+
 
 
 
